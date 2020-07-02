@@ -699,10 +699,7 @@ class marshal_with_field(object):
         """
         :param field: a single field with which to marshal the output.
         """
-        if isinstance(field, type):
-            self.field = field()
-        else:
-            self.field = field
+        self.field = field() if isinstance(field, type) else field
 
     def __call__(self, f):
         @wraps(f)
