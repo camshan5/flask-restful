@@ -185,8 +185,6 @@ class Argument(object):
 
         results = []
 
-        # Sentinels
-        _not_found = False
         _found = True
 
         for operator in self.operators:
@@ -197,7 +195,10 @@ class Argument(object):
                     values = source.getlist(name)
                 else:
                     values = source.get(name)
-                    if not (isinstance(values, MutableSequence) and self.action == 'append'):
+                    if (
+                        not isinstance(values, MutableSequence)
+                        or self.action != 'append'
+                    ):
                         values = [values]
 
                 for value in values:
@@ -246,6 +247,8 @@ class Argument(object):
             self.handle_validation_error(ValueError(error_msg), bundle_errors)
 
         if not results:
+            # Sentinels
+            _not_found = False
             if callable(self.default):
                 return self.default(), _not_found
             else:
